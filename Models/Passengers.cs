@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ElevatorSimulator.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Permissions;
@@ -10,11 +11,16 @@ namespace ElevatorSimulator.Models
 {
     public class Passengers : ObservableObject
     {
-        public Passengers(int _passengerNo, int _entertFloor, int _exitFloor)
+        public Passengers(int _passengerNo, int _enterFloor, int _exitFloor)
         {
             passengerNo = _passengerNo;
             exitFloor = _exitFloor;
-            enterFloor = _entertFloor;
+            enterFloor = _enterFloor;
+
+            if (_enterFloor - _exitFloor < 0)
+                direction = "up";
+            else
+                direction = "down";
         }
 
         private int m_passengerNo = -1;
@@ -31,7 +37,7 @@ namespace ElevatorSimulator.Models
             }
         }
 
-        private int m_enterFloor = 0;
+        private int m_enterFloor = -1;
         public int enterFloor
         {
             get { return m_enterFloor; }
@@ -45,7 +51,7 @@ namespace ElevatorSimulator.Models
             }
         }
 
-        private int m_exitFloor = 0;
+        private int m_exitFloor = -1;
         public int exitFloor
         {
             get { return m_exitFloor; }
@@ -55,6 +61,20 @@ namespace ElevatorSimulator.Models
                 {
                     this.m_exitFloor = value;
                     this.RaisePropertyChangedEvent("exitFloor");
+                }
+            }
+        }
+
+        private string m_direction = null;
+        public string direction
+        {
+            get { return m_direction; }
+            set
+            {
+                if (this.m_direction != value)
+                {
+                    this.m_direction = value;
+                    this.RaisePropertyChangedEvent("direction");
                 }
             }
         }
@@ -102,5 +122,18 @@ namespace ElevatorSimulator.Models
         }
 
 
+        private string m_passengerStatus = "waiting";
+        public string passengerStatus
+        {
+            get { return m_passengerStatus; }
+            set
+            {
+                if (this.m_passengerStatus != value)
+                {
+                    this.m_passengerStatus = value;
+                    this.RaisePropertyChangedEvent("passengerStatus");
+                }
+            }
+        }
     }
 }

@@ -18,7 +18,13 @@ namespace ElevatorSimulator
     {
         public MainWindow()
         {
+            DataContext = this;
             InitializeComponent();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((ListView)sender).ScrollIntoView(((ListView)sender).SelectedItem);
         }
     }
 }

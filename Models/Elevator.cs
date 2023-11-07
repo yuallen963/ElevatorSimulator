@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WGO.ViewModels;
 using System.Diagnostics;
+using ElevatorSimulator.ViewModels;
 
 namespace ElevatorSimulator.Models
 {
@@ -20,7 +21,7 @@ namespace ElevatorSimulator.Models
             {
                 if (this.m_currentFloor != value)
                 {
-                    Debug.WriteLine($"Floor {m_currentFloor} to {value}");
+                    MainVM.Instance.elevatorMessages.Add(new HelperClass() { Text = ($"Floor {m_currentFloor} to {value}") });
                     this.m_currentFloor = value;
                     this.RaisePropertyChangedEvent("currentFloor");
                 }
