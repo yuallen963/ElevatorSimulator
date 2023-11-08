@@ -20,11 +20,22 @@ namespace ElevatorSimulator
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<TextBlock> textBlocks= new List<TextBlock>();
         public MainWindow()
         {
             DataContext = this;
             InitializeComponent();
             ((INotifyCollectionChanged)messagesListView.ItemsSource).CollectionChanged += new NotifyCollectionChangedEventHandler(MessengerCollectionChanged);
+            textBlocks.Add(Floor1);
+            textBlocks.Add(Floor2);
+            textBlocks.Add(Floor3);
+            textBlocks.Add(Floor4);
+            textBlocks.Add(Floor5);
+            textBlocks.Add(Floor6);
+            textBlocks.Add(Floor7);
+            textBlocks.Add(Floor8);
+            textBlocks.Add(Floor9);
+            textBlocks.Add(Floor10);
         }
         
         //When the Messages ListView's collection is changed, this function is called
@@ -212,5 +223,12 @@ namespace ElevatorSimulator
 
         }
 
+        private void TextBlock_TargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            int floor = Convert.ToInt32(((TextBlock)sender).Text) - 1;
+            foreach (TextBlock txtBlck in textBlocks)
+                txtBlck.FontWeight = FontWeights.Normal;
+            textBlocks[floor].FontWeight = FontWeights.Bold;
+        }
     }
 }

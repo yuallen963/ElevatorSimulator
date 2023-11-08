@@ -21,7 +21,7 @@ namespace ElevatorSimulator.Models
             {
                 if (this.m_currentFloor != value)
                 {
-                    MainVM.Instance.elevatorMessages.Add(new HelperClass() { Text = ($"Floor {m_currentFloor} to {value}") });
+                    MainVM.Instance.AddMessages($"Floor {m_currentFloor} to {value}");
                     this.m_currentFloor = value;
                     this.RaisePropertyChangedEvent("currentFloor");
                 }

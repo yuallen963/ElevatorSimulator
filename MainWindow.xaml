@@ -50,7 +50,7 @@
         </DockPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,3">
             <Border BorderThickness="1" BorderBrush="Black"  Width="40">
-                <TextBlock Text="{Binding elevatorObj.currentFloor}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+                <TextBlock Text="{Binding elevatorObj.currentFloor, NotifyOnTargetUpdated=True}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25" TargetUpdated="TextBlock_TargetUpdated" />
             </Border>
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="5,0,0,0">
                 <TextBlock>
@@ -81,12 +81,12 @@
         </ListView>
         <!-- Messages -->
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">
-                <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">-->
+            <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">-->
+                <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">
                 <ListView.View>
                     <GridView>
-                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="400"/>-->
-                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>
+                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="400"/>
+                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>-->
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -180,7 +180,7 @@
                 </Style>
             </StackPanel.Resources>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 10"/>
+                <TextBlock x:Name="Floor10" Text="Floor 10" Tag="10"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp10" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -191,7 +191,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 9"/>
+                <TextBlock x:Name="Floor9" Text="Floor 9"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp9" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -202,7 +202,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 8"/>
+                <TextBlock x:Name="Floor8" Text="Floor 8"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp8" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -213,7 +213,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 7"/>
+                <TextBlock x:Name="Floor7" Text="Floor 7"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp7" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -224,7 +224,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 6"/>
+                <TextBlock x:Name="Floor6" Text="Floor 6"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp6" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -235,7 +235,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 5"/>
+                <TextBlock x:Name="Floor5" Text="Floor 5"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp5" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -246,7 +246,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 4"/>
+                <TextBlock x:Name="Floor4" Text="Floor 4"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp4" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -257,7 +257,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 3"/>
+                <TextBlock x:Name="Floor3" Text="Floor 3"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp3" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -268,7 +268,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 2"/>
+                <TextBlock x:Name="Floor2" Text="Floor 2"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp2" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
@@ -279,7 +279,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Floor 1"/>
+                <TextBlock x:Name="Floor1" Text="Floor 1" FontWeight="Bold"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="RequestUp1" Command="{Binding ElevatorUpCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Name}">
                         <Image Source="/Resources/Images/elevator_up.png"/>
