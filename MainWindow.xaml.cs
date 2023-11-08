@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using ElevatorSimulator.Models;
+using ElevatorSimulator.ViewModels;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,11 +24,193 @@ namespace ElevatorSimulator
         {
             DataContext = this;
             InitializeComponent();
+            ((INotifyCollectionChanged)messagesListView.ItemsSource).CollectionChanged += new NotifyCollectionChangedEventHandler(MessengerCollectionChanged);
+        }
+        
+        //When the Messages ListView's collection is changed, this function is called
+        //Scrolls into view the newest message on the bottom
+        //Also changes the floor up/down button colors as it is called / a passenger is picked up
+        private void MessengerCollectionChanged(Object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ObservableCollection<HelperClass> list = (ObservableCollection<HelperClass>)sender;
+            messagesListView.ScrollIntoView(list[list.Count() - 1]);
+
+            foreach (Passengers item in MainVM.Instance.passengerList)
+            {
+                if (item.enterFloor == 1)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp1.Background = Brushes.Green;
+                        else
+                            RequestDown1.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp1.Background = Brushes.Transparent;
+                        else
+                            RequestDown1.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 2)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+
+                    {
+                        if (item.direction == "up")
+                            RequestUp2.Background = Brushes.Green;
+                        else
+                            RequestDown2.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp2.Background = Brushes.Transparent;
+                        else
+                            RequestDown2.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 3)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp3.Background = Brushes.Green;
+                        else
+                            RequestDown3.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp3.Background = Brushes.Transparent;
+                        else
+                            RequestDown3.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 4)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp4.Background = Brushes.Green;
+                        else
+                            RequestDown4.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp4.Background = Brushes.Transparent;
+                        else
+                            RequestDown4.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 5)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp5.Background = Brushes.Green;
+                        else
+                            RequestDown5.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp5.Background = Brushes.Transparent;
+                        else
+                            RequestDown5.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 6)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp6.Background = Brushes.Green;
+                        else
+                            RequestDown6.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp6.Background = Brushes.Transparent;
+                        else
+                            RequestDown6.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 7)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp7.Background = Brushes.Green;
+                        else
+                            RequestDown7.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp7.Background = Brushes.Transparent;
+                        else
+                            RequestDown7.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 8)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp8.Background = Brushes.Green;
+                        else
+                            RequestDown8.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp8.Background = Brushes.Transparent;
+                        else
+                            RequestDown8.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 9)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp9.Background = Brushes.Green;
+                        else
+                            RequestDown9.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp9.Background = Brushes.Transparent;
+                        else
+                            RequestDown9.Background = Brushes.Transparent;
+                    }
+                }
+                else if (item.enterFloor == 10)
+                {
+                    if (item.passengerStatus == "waiting" || item.passengerStatus == "in queue")
+                    {
+                        if (item.direction == "up")
+                            RequestUp10.Background = Brushes.Green;
+                        else
+                            RequestDown10.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        if (item.direction == "up")
+                            RequestUp10.Background = Brushes.Transparent;
+                        else
+                            RequestDown10.Background = Brushes.Transparent;
+                    }
+                }
+            }
+
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ((ListView)sender).ScrollIntoView(((ListView)sender).SelectedItem);
-        }
     }
 }

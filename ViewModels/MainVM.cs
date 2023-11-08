@@ -16,6 +16,8 @@ namespace ElevatorSimulator.ViewModels
 {
     public class MainVM : ObservableObject
     {
+        //Creates an instance of MainVM so this class and its properties can be referenced from anywhere
+        //
         public static MainVM Instance { get; private set; }
         internal static MainVM m_MainVM = null;
         public static void SetWnd(MainVM wnd)
@@ -31,11 +33,27 @@ namespace ElevatorSimulator.ViewModels
         }
 
         #region Variables
+
+
+        private string m_testList;
+        public string testList
+        {
+            get { return m_testList; }
+            set
+            {
+                if (this.m_testList != value)
+                {
+                    this.m_testList = value;
+                    this.RaisePropertyChangedEvent("testList");
+                }
+            }
+        }
+
         private int passengerCount = 1;
         private int waitInterval = 10;
-        private int floorRequested = -1;
         private int floorExit = -1;
         private bool elevatorActivated = false;
+        private int delayTime = 2000;
         private Elevator m_elevatorObj = new Elevator();
         public Elevator elevatorObj
         {
@@ -81,6 +99,19 @@ namespace ElevatorSimulator.ViewModels
         }
 
 
+        private int m_floorRequested = -1;
+        public int floorRequested
+        {
+            get { return m_floorRequested; }
+            set
+            {
+                if (this.m_floorRequested != value)
+                {
+                    this.m_floorRequested = value;
+                    this.RaisePropertyChangedEvent("floorRequested");
+                }
+            }
+        }
 
         private Visibility m_elevatorFloorsVisibility = Visibility.Collapsed;
         public Visibility elevatorFloorsVisibility
@@ -95,26 +126,6 @@ namespace ElevatorSimulator.ViewModels
                 }
             }
         }
-
-
-        private HelperClass m_latestMessage = null;
-        public HelperClass latestMessage
-        {
-            get { return m_latestMessage; }
-            set
-            {
-                if (this.m_latestMessage != value)
-                {
-                    this.m_latestMessage = value;
-                    this.RaisePropertyChangedEvent("latestMessage");
-                }
-            }
-        }
-
-
-
-
-
 
         private ObservableCollection<Passengers> m_passengerList = new ObservableCollection<Passengers>();
         public ObservableCollection<Passengers> passengerList
@@ -133,12 +144,7 @@ namespace ElevatorSimulator.ViewModels
         private ObservableCollection<HelperClass> m_elevatorMessages = new ObservableCollection<HelperClass>();
         public ObservableCollection<HelperClass> elevatorMessages
         {
-            get 
-            {
-                if (m_elevatorMessages.Count() != 0)
-                    latestMessage = m_elevatorMessages[m_elevatorMessages.Count() - 1];
-                return m_elevatorMessages; 
-            }
+            get { return m_elevatorMessages; }
             set
             {
                 if (this.m_elevatorMessages != value)
@@ -148,66 +154,11 @@ namespace ElevatorSimulator.ViewModels
                 }
             }
         }
-
-
-
-
-
-        //private List<Passengers> m_passengersWaiting = new List<Passengers>();
-        //public List<Passengers> passengersWaiting
-        //{
-        //    get { return m_passengersWaiting; }
-        //    set
-        //    {
-        //        if (this.m_passengersWaiting != value)
-        //        {
-        //            this.m_passengersWaiting = value;
-        //            this.RaisePropertyChangedEvent("passengersWaiting");
-        //        }
-        //    }
-        //}
-
-
-        //private List<Passengers> m_passengersInQueue = new List<Passengers>();
-        //public List<Passengers> passengersInQueue
-        //{
-        //    get { return m_passengersInQueue; }
-        //    set
-        //    {
-        //        if (this.m_passengersInQueue != value)
-        //        {
-        //            this.m_passengersInQueue = value;
-        //            this.RaisePropertyChangedEvent("passengersInQueue");
-        //        }
-        //    }
-        //}
-
-
-        //private List<Passengers> m_passengersInElevator = new List<Passengers>();
-        //public List<Passengers> passengersInElevator
-        //{
-        //    get { return m_passengersInElevator; }
-        //    set
-        //    {
-        //        if (this.m_passengersInElevator != value)
-        //        {
-        //            this.m_passengersInElevator = value;
-        //            this.RaisePropertyChangedEvent("passengersInElevator");
-        //        }
-        //    }
-        //}
-
-
-
-
-
-
-
-
-
         #endregion
 
         #region Buttons
+        //Opens a file dialog box to select a file to import
+        //Calls ValidateTxtFile to check the selected file
         public ICommand ImportTxtFileCommand { get { return new DelegateCommand(m_ImportTxtFileCommand); } }
         private void m_ImportTxtFileCommand()
         {
@@ -221,7 +172,26 @@ namespace ElevatorSimulator.ViewModels
             ValidateTxtFile(fileName);
         }
 
+        //Test Function
+        //Creates 5 random passengers with random floors to enter and exit on (1-10)
+        //Starts the elevator
+        public ICommand CreateRandomPassengers { get { return new DelegateCommand(m_CreateRandomPassengers); } }
+        private void m_CreateRandomPassengers()
+        {
+            Random rnd = new Random();
+            for (int i = 0; i < 5; i++) 
+            {
+                int start = Convert.ToInt32(rnd.NextInt64(1,11));
+                int exit = Convert.ToInt32(rnd.NextInt64(1, 11));
+                passengerList.Add(new Passengers(passengerCount, start, exit));
+                testList += (start + "-" + exit + "\n");
+                passengerCount++;
+            }
+            ActivateElevator();
+        }
 
+        //When the elevator is called to go up on any floor, the view changes to the panel to select the floor to get off on.
+        //Button command, CommandParameter - Button Name
         public ICommand ElevatorUpCommand { get { return new RelayCommand<string>(m_ElevatorUpCommand); } }
         private void m_ElevatorUpCommand(string s)
         {
@@ -229,6 +199,9 @@ namespace ElevatorSimulator.ViewModels
             elevatorFloorsVisibility = Visibility.Visible;
             floorRequested = Convert.ToInt32(s);
         }
+
+        //When the elevator is called to go down on any floor, the view changes to the panel to select the floor to get off on.
+        //Button command, CommandParameter - Button Name
         public ICommand ElevatorDownCommand { get { return new RelayCommand<string>(m_ElevatorDownCommand); } }
         private void m_ElevatorDownCommand(string s)
         {
@@ -237,6 +210,16 @@ namespace ElevatorSimulator.ViewModels
             floorRequested = Convert.ToInt32(s);
         }
 
+        //Cancel option to return to view all the floors
+        public ICommand CancelCommand { get { return new DelegateCommand(m_CancelCommand); } }
+        private void m_CancelCommand()
+        {
+            elevatorFloorsVisibility = Visibility.Collapsed;
+        }
+
+        //RelayCommand for when a button on the elevator panel is selected, the command parameter is the
+        //floor selected to exit on
+        //Button Command, CommandParameter - Button Content
         public ICommand ElevatorFloorButtonCommand { get { return new RelayCommand<string>(m_ElevatorFloorButtonCommand); } }
         private void m_ElevatorFloorButtonCommand(string s)
         {
@@ -252,9 +235,10 @@ namespace ElevatorSimulator.ViewModels
         #endregion
 
         #region Functions
+        //Checks the file to make sure that the values are valid
+        //if so, add all passengers to the list and start the elevator using ActivateElevator()
         private async void ValidateTxtFile(string fileName)
         {
-            //passengersWaiting.Clear();
             using (StreamReader sr = new StreamReader(fileName))
             {
                 string line = "";
@@ -295,13 +279,14 @@ namespace ElevatorSimulator.ViewModels
             ActivateElevator();
         }
 
+        //In order for the elevator to move, this function must be called
         private async void ActivateElevator()
         {
             while (passengerList.Count > 0)
             {
                 if (elevatorObj.moving)
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(delayTime);
                     continue;
                 }
                 else
@@ -323,11 +308,9 @@ namespace ElevatorSimulator.ViewModels
             }
             if (passengerCount == 0)
                 elevatorObj.moving = false;
-            //if (passengersWaiting.Count() != 0)
-            //{
-            //    //if (passengersWaiting)
-            //}
         }
+
+        //When the elevator is actived, and the elevator's next passenger has selected to go up
         private async void ElevatorUp()
         {
             elevatorObj.moving = true;
@@ -339,8 +322,9 @@ namespace ElevatorSimulator.ViewModels
                     while (elevatorObj.currentFloor != passengerList[0].enterFloor)
                     {
                         IncrementPassengerTime();
-                        await Task.Delay(1000);
-                        if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0)
+                        await Task.Delay(delayTime);
+                        if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0 &&
+                            passengerList.Where(u => u.direction == "down").Count() > 0)
                             elevatorObj.currentFloor++;
                     }
                     elevatorObj.moving = false;
@@ -364,28 +348,29 @@ namespace ElevatorSimulator.ViewModels
                     pass.inElevator = true;
                     pass.passengerStatus = "in elevator";
 
-                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {pass.passengerNo} ENTERed floor {elevatorObj.currentFloor}" });
+                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {pass.passengerNo} ENTER from floor {elevatorObj.currentFloor}" });
 
 
                 }
-                passengers = passengerList.Where(u => u.exitFloor == elevatorObj.currentFloor && (u.direction == "up"));
-                //foreach (Passengers pass in passengers)
-                //{
-                    for (int i = passengers.Count() - 1; i >= 0; i--)
-                    {
-                        elevatorMessages.Add(new HelperClass() { Text = $"Passenger {passengers.ElementAt(i).passengerNo} EXITed on floor {elevatorObj.currentFloor}" });
-                        passengerList.Remove(passengers.ElementAt(i));
-                    }
-                //}
+                passengers = passengerList.Where(u => u.exitFloor == elevatorObj.currentFloor && (u.direction == "up") && u.passengerStatus == "in elevator");
+                for (int i = passengers.Count() - 1; i >= 0; i--)
+                {
+                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {passengers.ElementAt(i).passengerNo} EXIT on floor {elevatorObj.currentFloor} [Wait Time: {passengers.ElementAt(i).waitTime}] [Travel Time: {passengers.ElementAt(i).inElevatorTime}]" });
+                    IncrementPassengerTime();
+                    passengerList.Remove(passengers.ElementAt(i));
+                }
+
                 IncrementPassengerTime();
-                await Task.Delay(2000);
-                if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0)
+                await Task.Delay(delayTime);
+                if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0 && 
+                    passengerList.Where(u => u.direction == "up").Count() > 0)
                     elevatorObj.currentFloor++;
 
             }
             elevatorObj.moving = false;
         }
 
+        //When the elevator is actived, and the elevator's next passenger has selected to go down
         private async void ElevatorDown()
         {
             elevatorObj.moving = true;
@@ -397,8 +382,9 @@ namespace ElevatorSimulator.ViewModels
                     while (elevatorObj.currentFloor != passengerList[0].enterFloor)
                     {
                         IncrementPassengerTime();
-                        await Task.Delay(1000);
-                        if (elevatorObj.currentFloor - 1 > 0 && passengerList.Count() > 0)
+                        await Task.Delay(delayTime);
+                        if (elevatorObj.currentFloor - 1 > 0 && passengerList.Count() > 0 &&
+                            passengerList.Where(u => u.direction == "up").Count() > 0)
                             elevatorObj.currentFloor--;
                     }
                     elevatorObj.moving = false;
@@ -422,26 +408,30 @@ namespace ElevatorSimulator.ViewModels
                     pass.inElevator = true;
                     pass.passengerStatus = "in elevator";
 
-                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {pass.passengerNo} ENTERed floor {elevatorObj.currentFloor}" });
+                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {pass.passengerNo} ENTER from floor {elevatorObj.currentFloor}" });
                 }
-                passengers = passengerList.Where(u => u.exitFloor == elevatorObj.currentFloor && (u.direction == "down"));
-                //foreach (Passengers pass in passengers)
-                //{
+                passengers = passengerList.Where(u => u.exitFloor == elevatorObj.currentFloor && (u.direction == "down") && u.passengerStatus == "in elevator");
+
                 for (int i = passengers.Count() - 1; i >= 0; i--)
                 {
-                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {passengers.ElementAt(i).passengerNo} EXITed on floor {elevatorObj.currentFloor}" });
+                    elevatorMessages.Add(new HelperClass() { Text = $"Passenger {passengers.ElementAt(i).passengerNo} EXIT on floor {elevatorObj.currentFloor} [Wait Time: {passengers.ElementAt(i).waitTime}] [Travel Time: {passengers.ElementAt(i).inElevatorTime}]" });
+                    IncrementPassengerTime();
                     passengerList.Remove(passengers.ElementAt(i));
                 }
-                //}
+
                 IncrementPassengerTime();
-                await Task.Delay(1000);
-                if (elevatorObj.currentFloor - 1 > 0 && passengerList.Count() > 0)
+                await Task.Delay(delayTime);
+                if (elevatorObj.currentFloor - 1 > 0 && passengerList.Count() > 0 &&
+                    passengerList.Where(u => u.direction == "down").Count() > 0)
                     elevatorObj.currentFloor--;
 
             }
             elevatorObj.moving = false;
         }
 
+        //Increments passenger wait time and travel time
+        //if passenger is not in the elevator, wait time is increased
+        //if passenger is in the elevator, travel time is increased.
         private void IncrementPassengerTime()
         {
             foreach(Passengers pass in passengerList)
@@ -455,6 +445,7 @@ namespace ElevatorSimulator.ViewModels
         #endregion
     }
 
+    //Helper class to display messages
     public class HelperClass : ObservableObject
     {
         private string m_Text;

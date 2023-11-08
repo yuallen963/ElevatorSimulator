@@ -6,10 +6,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\Images\elevator_down.png" />
+    <None Remove="Resources\Images\elevator_moving.png" />
+    <None Remove="Resources\Images\elevator_stopped.png" />
     <None Remove="Resources\Images\elevator_up.png" />
   </ItemGroup>
 
@@ -19,6 +22,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\elevator_down.png" />
+    <Resource Include="Resources\Images\elevator_moving.png" />
+    <Resource Include="Resources\Images\elevator_stopped.png" />
     <Resource Include="Resources\Images\elevator_up.png" />
   </ItemGroup>
 

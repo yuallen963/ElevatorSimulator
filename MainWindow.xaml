@@ -16,7 +16,7 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -48,16 +48,25 @@
             </Image>
             <TextBlock Text="{Binding statusUpdate}"/>
         </DockPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,3">
             <Border BorderThickness="1" BorderBrush="Black"  Width="40">
                 <TextBlock Text="{Binding elevatorObj.currentFloor}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
             </Border>
-            <TextBlock Text="{Binding elevatorObj.direction}"/>
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="5,0,0,0">
+                <TextBlock>
+                    <Run Text="Direction: "/>
+                    <Run Text="{Binding elevatorObj.direction}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="In motion: "/>
+                    <Run Text="{Binding elevatorObj.moving}"/>
+                </TextBlock>
+            </StackPanel>
         </StackPanel>
         
         
         <!-- Passengers List -->
-        <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding passengerList}">
+        <ListView x:Name="passengerListView" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding passengerList}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Passenger No" DisplayMemberBinding="{Binding passengerNo}"/>
@@ -66,18 +75,23 @@
                     <GridViewColumn Header="Enter Floor" DisplayMemberBinding="{Binding enterFloor}"/>
                     <GridViewColumn Header="Exit Floor" DisplayMemberBinding="{Binding exitFloor}"/>
                     <GridViewColumn Header="Direction" DisplayMemberBinding="{Binding direction}"/>
-                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding passengerStatus}" Width="100"/>
+                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding passengerStatus}" Width="75"/>
                 </GridView>
             </ListView.View>
         </ListView>
         <!-- Messages -->
-        <ListView Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" SelectedItem="{Binding latestMessage}" SelectionChanged="ListView_SelectionChanged">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="500"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">
+                <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">-->
+                <ListView.View>
+                    <GridView>
+                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="400"/>-->
+                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <TextBox Text="{Binding testList}" Width="50"/>
+        </StackPanel>
 
         <!-- inside elevator panel view -->
         <StackPanel x:Name="elevatorFloorVisibilityStackP" Grid.Column="1" Grid.RowSpan="3" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding elevatorFloorsVisibility}">
@@ -88,13 +102,17 @@
                     <Setter Property="CornerRadius" Value="15"/>
                     <Setter Property="Width" Value="30"/>
                     <Setter Property="Height" Value="30"/>
-                    <Setter Property="Margin" Value="5,0"/>
+                    <Setter Property="Margin" Value="5,2"/>
                 </Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="Background" Value="Transparent"/>
                 </Style>
             </StackPanel.Resources>
+            <TextBlock Margin="0,0,0,5">
+                <Run Text="Entry Level: "/>
+                <Run Text="{Binding floorRequested}"/>
+            </TextBlock>
             <StackPanel Orientation="Horizontal">
                 <Border>
                     <Button Content="9" Command="{Binding ElevatorFloorButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}"/>
@@ -135,6 +153,8 @@
                     <Button Content="2" Command="{Binding ElevatorFloorButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}"/>
                 </Border>
             </StackPanel>
+
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="0,5,0,0"/>
         </StackPanel>
         
         <!--All floor view-->
@@ -269,7 +289,11 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
-            <Button DockPanel.Dock="Bottom" Height="30" Content="Import" Command="{Binding ImportTxtFileCommand}" />
+
+            <StackPanel Orientation="Horizontal">
+            <Button DockPanel.Dock="Bottom" Height="30" Content="!" Command="{Binding CreateRandomPassengers}" Background="Red" Width="10" ToolTip="Adds 5 passengers with random enter and exit floors"/>
+            <Button DockPanel.Dock="Bottom" Height="30" Content="Import" Command="{Binding ImportTxtFileCommand}" Background="LightGray" Width="110" ToolTip="Import a file to add passengers to the elevator" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>
