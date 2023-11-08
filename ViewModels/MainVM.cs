@@ -334,7 +334,9 @@ namespace ElevatorSimulator.ViewModels
             {
                 if (passengerList[0].direction == "down")
                 {
-                    while (elevatorObj.currentFloor != passengerList[0].enterFloor)
+                    var tempPassengersList = passengerList.Where(u => u.direction == "down").OrderByDescending(floor => floor.enterFloor);
+
+                    while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
                         IncrementPassengerTime();
                         //await Task.Delay(delayTime);
@@ -348,16 +350,16 @@ namespace ElevatorSimulator.ViewModels
             }
             #endregion
 
-            var passengers = passengerList.Where(u => u.enterFloor >= elevatorObj.currentFloor && (u.direction == "up"));
-            foreach (Passengers pass in passengers)
+            var passengersL = passengerList.Where(u => u.direction == "up").OrderByDescending(floor => floor.enterFloor);
+            foreach (Passengers pass in passengersL)
             {
                 pass.passengerStatus = "in queue";
             }
 
             //Check for passengers ENTERING elevator
-            while (passengerList.Where(u => u.passengerStatus == "in queue" || u.passengerStatus == "in elevator").Count() > 0) // && u.direction == "up"
+            while (passengerList.Where(u => u.passengerStatus == "in queue" && u.enterFloor >= elevatorObj.currentFloor || u.passengerStatus == "in elevator").Count() > 0) // && u.direction == "up"
             {
-                passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "up") && (u.passengerStatus != "in elevator"));
+                var passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "up") && (u.passengerStatus != "in elevator"));
                 foreach (Passengers pass in passengers)
                 {
                     pass.inElevator = true;
@@ -396,10 +398,10 @@ namespace ElevatorSimulator.ViewModels
             #region if passenger requested to go up, but the elevator needs to go down to pick them up
             if (passengerList.Count() != 0)
             {
-                //var tempPassengersList = passengerList.Where(u => u.direction == "down");
+                var tempPassengersList = passengerList.Where(u => u.direction == "up").OrderBy(floor => floor.enterFloor);
                 if (passengerList[0].direction == "up")
                 {
-                    while (elevatorObj.currentFloor != passengerList[0].enterFloor)
+                    while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
                         IncrementPassengerTime();
                         if (elevatorObj.currentFloor - 1 > 0 && passengerList.Count() > 0 &&
@@ -412,16 +414,16 @@ namespace ElevatorSimulator.ViewModels
             }
             #endregion
 
-            var passengers = passengerList.Where(u => u.enterFloor <= elevatorObj.currentFloor && (u.direction == "down"));
-            foreach (Passengers pass in passengers)
+            var passengersL = passengerList.Where(u => u.direction == "down").OrderByDescending(floor => floor.enterFloor);
+            foreach (Passengers pass in passengersL)
             {
                 pass.passengerStatus = "in queue";
             }
 
             //Check for passengers ENTERING elevator
-            while (passengerList.Where(u => u.passengerStatus == "in queue" || u.passengerStatus == "in elevator").Count() > 0)
+            while (passengerList.Where(u => u.passengerStatus == "in queue" && u.enterFloor <= elevatorObj.currentFloor || u.passengerStatus == "in elevator").Count() > 0)
             {
-                passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "down") && (u.passengerStatus != "in elevator"));
+                var passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "down") && (u.passengerStatus != "in elevator"));
                 foreach (Passengers pass in passengers)
                 {
                     pass.inElevator = true;

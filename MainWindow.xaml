@@ -67,6 +67,18 @@
         
         <!-- Passengers List -->
         <ListView x:Name="passengerListView" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding passengerList}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding passengerStatus}" Value="in queue">
+                            <Setter Property="Background" Value="Gold"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding passengerStatus}" Value="in elevator">
+                            <Setter Property="Background" Value="LightGreen"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Passenger No" DisplayMemberBinding="{Binding passengerNo}"/>
@@ -81,12 +93,12 @@
         </ListView>
         <!-- Messages -->
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">-->
-                <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">
+            <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">
+                <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">-->
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="400"/>
-                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>-->
+                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="400"/>-->
+                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>
                     </GridView>
                 </ListView.View>
             </ListView>
