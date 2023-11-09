@@ -25,8 +25,14 @@ namespace ElevatorSimulator.ViewModels
         {
             m_MainVM = wnd;
         }
+
+        public CancellationTokenSource cts = new CancellationTokenSource();
+        CancellationToken token;
+
         public MainVM()
         {
+            token = cts.Token;
+
             Instance = this;
             SetWnd(Instance);
 
@@ -38,7 +44,6 @@ namespace ElevatorSimulator.ViewModels
 
         Thread myThread = null;
         #region Variables
-
 
         private string m_testList;
         public string testList
@@ -195,11 +200,7 @@ namespace ElevatorSimulator.ViewModels
                 passengerCount++;
             }
 
-            if (!myThread.IsAlive)
-            {
-                myThread = new Thread(ActivateElevator);
-                myThread.Start();
-            }
+            StartThread();
         }
 
         //When the elevator is called to go up on any floor, the view changes to the panel to select the floor to get off on.
@@ -229,6 +230,18 @@ namespace ElevatorSimulator.ViewModels
             elevatorFloorsVisibility = Visibility.Collapsed;
         }
 
+
+        public ICommand PauseThreadCommand { get { return new DelegateCommand(m_PauseThreadCommand); } }
+        private void m_PauseThreadCommand()
+        {
+            if (!cts.IsCancellationRequested)
+                cts.Cancel();
+            else
+                StartThread();
+        }
+
+
+
         //RelayCommand for when a button on the elevator panel is selected, the command parameter is the
         //floor selected to exit on
         //Button Command, CommandParameter - Button Content
@@ -239,11 +252,7 @@ namespace ElevatorSimulator.ViewModels
             floorExit = Convert.ToInt32(s);
             passengerList.Add(new Passengers(passengerCount,floorRequested, floorExit));
             passengerCount++;
-            if (!myThread.IsAlive)
-            {
-                myThread = new Thread(ActivateElevator);
-                myThread.Start();
-            }
+            StartThread();
         }
         #endregion
 
@@ -299,11 +308,7 @@ namespace ElevatorSimulator.ViewModels
                 passengerCount++;
             }
 
-            if (!myThread.IsAlive)
-            {
-                myThread = new Thread(ActivateElevator);
-                myThread.Start();
-            }
+            StartThread();
         }
 
         //In order for the elevator to move, this function must be called
@@ -311,6 +316,9 @@ namespace ElevatorSimulator.ViewModels
         {
             while (passengerList.Count > 0)
             {
+                if (CheckCancellationToken())
+                    return;
+
                 elevatorObj.direction = passengerList[0].direction;
                 if (passengerList[0].direction == "up")
                 {
@@ -343,6 +351,8 @@ namespace ElevatorSimulator.ViewModels
 
                     while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
+                        if (CheckCancellationToken())
+                            return;
                         IncrementPassengerTime();
                         if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0 &&
                             passengerList.Where(u => u.direction == "down").Count() > 0)
@@ -364,6 +374,9 @@ namespace ElevatorSimulator.ViewModels
             //Check for passengers ENTERING elevator
             while (passengerList.Where(u => u.passengerStatus == "in queue" && u.enterFloor >= elevatorObj.currentFloor || u.passengerStatus == "in elevator").Count() > 0) // && u.direction == "up"
             {
+                if (CheckCancellationToken())
+                    return;
+
                 var passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "up") && (u.passengerStatus != "in elevator"));
                 if (passengers.Count() != 0)
                 {
@@ -420,6 +433,8 @@ namespace ElevatorSimulator.ViewModels
                 {
                     while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
+                        if (CheckCancellationToken())
+                            return;
                         IncrementPassengerTime();
                         if (elevatorObj.currentFloor - 1 > 0 && passengerList.Count() > 0 &&
                             passengerList.Where(u => u.direction == "up").Count() > 0)
@@ -439,6 +454,9 @@ namespace ElevatorSimulator.ViewModels
             //Check for passengers ENTERING elevator
             while (passengerList.Where(u => u.passengerStatus == "in queue" && u.enterFloor <= elevatorObj.currentFloor || u.passengerStatus == "in elevator").Count() > 0)
             {
+                if (CheckCancellationToken())
+                    return;
+
                 var passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "down") && (u.passengerStatus != "in elevator"));
                 if (passengers.Count() != 0)
                 {
@@ -451,8 +469,8 @@ namespace ElevatorSimulator.ViewModels
 
                         AddMessages($"Passenger {pass.passengerNo} ENTER from floor {elevatorObj.currentFloor}");
                     }
-
                 }
+
 
                 passengers = passengerList.Where(u => u.exitFloor == elevatorObj.currentFloor && (u.direction == "down") && u.passengerStatus == "in elevator");
                 if (passengers.Count() > 0)
@@ -469,6 +487,7 @@ namespace ElevatorSimulator.ViewModels
                         });
                     }
                 }
+
                 if (!elevatorObj.moving)
                 {
                     IncrementPassengerTime();
@@ -488,14 +507,47 @@ namespace ElevatorSimulator.ViewModels
         //if passenger is in the elevator, travel time is increased.
         private void IncrementPassengerTime()
         {
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-            foreach(Passengers pass in passengerList)
+            try
             {
-                if (pass.inElevator)
-                    pass.inElevatorTime += waitInterval;
-                else
-                    pass.waitTime += waitInterval;
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+                foreach (Passengers pass in passengerList)
+                {
+                    if (pass.inElevator)
+                        pass.inElevatorTime += waitInterval;
+                    else
+                        pass.waitTime += waitInterval;
+                }
             }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        private void StartThread()
+        {
+            if (!myThread.IsAlive)
+            {
+                cts = new CancellationTokenSource();
+                myThread = new Thread(ActivateElevator);
+                myThread.Start();
+            }
+        }
+
+        private bool CheckCancellationToken()
+        {
+            if (cts.IsCancellationRequested)
+            {
+                foreach(Passengers pass in passengerList)
+                {
+                    if (pass.passengerStatus == "in elevator")
+                        pass.passengerStatus = "waiting";
+                }
+                myThread.Interrupt();
+                return true;
+            }
+            else
+                return false;
         }
 
         public void AddMessages(string message)

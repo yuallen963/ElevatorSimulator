@@ -21,6 +21,13 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
+        <Button Command="{Binding PauseThreadCommand}" Width="50" HorizontalAlignment="Left" Click="Button_Click">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Pause"/>
+                </Style>
+            </Button.Style>
+        </Button>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,3">
             <Border BorderThickness="1" BorderBrush="Black" Width="40" Margin="40,0,0,0">
                 <TextBlock Text="{Binding elevatorObj.currentFloor, NotifyOnTargetUpdated=True}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25" TargetUpdated="TextBlock_TargetUpdated" />

@@ -240,7 +240,17 @@ namespace ElevatorSimulator
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //MainVM.Instance.;
             Environment.Exit(Environment.ExitCode);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn.Content == "Pause")
+                btn.Content = "Resume";
+            else
+                btn.Content = "Pause";
         }
     }
 }
