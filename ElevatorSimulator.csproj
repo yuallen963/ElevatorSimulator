@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <None Remove="Resources\Images\elevator_down.png" />
-    <None Remove="Resources\Images\elevator_moving.png" />
-    <None Remove="Resources\Images\elevator_stopped.png" />
+    <None Remove="Resources\Images\elevator_in_motion_down.png" />
+    <None Remove="Resources\Images\elevator_in_motion_up.png" />
     <None Remove="Resources\Images\elevator_up.png" />
   </ItemGroup>
 
@@ -22,8 +22,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\elevator_down.png" />
-    <Resource Include="Resources\Images\elevator_moving.png" />
-    <Resource Include="Resources\Images\elevator_stopped.png" />
+    <Resource Include="Resources\Images\elevator_in_motion_down.png" />
+    <Resource Include="Resources\Images\elevator_in_motion_up.png" />
     <Resource Include="Resources\Images\elevator_up.png" />
   </ItemGroup>
 

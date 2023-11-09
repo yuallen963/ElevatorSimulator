@@ -229,6 +229,7 @@ namespace ElevatorSimulator
 
         }
 
+        //Changes the Floor # textblock to show which floor the elevator is on
         private void TextBlock_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             int floor = Convert.ToInt32(((TextBlock)sender).Text) - 1;

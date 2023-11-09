@@ -6,7 +6,7 @@
         xmlns:ViewModels="clr-namespace:ElevatorSimulator.ViewModels"
         xmlns:local="clr-namespace:ElevatorSimulator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="600" ResizeMode="NoResize" Topmost="True">
+        Title="Elevator Simulator - Cadwell" Height="600" Width="600" ResizeMode="NoResize" Topmost="False">
     <Window.DataContext>
         <ViewModels:MainVM/>
     </Window.DataContext>
@@ -21,52 +21,40 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="False" Margin="100,0,0,0">
-            <Image Source="/Resources/Images/elevator_moving.png">
-                <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding elevatorMoving}" Value="true">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-            <Image Source="/Resources/Images/elevator_stopped.png">
-                <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding elevatorMoving}" Value="false">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-            <TextBlock Text="{Binding statusUpdate}"/>
-        </DockPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,3">
-            <Border BorderThickness="1" BorderBrush="Black"  Width="40">
+            <Border BorderThickness="1" BorderBrush="Black" Width="40" Margin="40,0,0,0">
                 <TextBlock Text="{Binding elevatorObj.currentFloor, NotifyOnTargetUpdated=True}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25" TargetUpdated="TextBlock_TargetUpdated" />
             </Border>
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="5,0,0,0">
-                <TextBlock>
-                    <Run Text="Direction: "/>
-                    <Run Text="{Binding elevatorObj.direction}"/>
-                </TextBlock>
-                <TextBlock>
-                    <Run Text="In motion: "/>
-                    <Run Text="{Binding elevatorObj.moving}"/>
-                </TextBlock>
-            </StackPanel>
+
+            <Image Height="25" Source="/Resources/Images/elevator_in_motion_up.png">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding elevatorObj.direction}" Value="down">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
+            <Image Height="25" Source="/Resources/Images/elevator_in_motion_down.png">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding elevatorObj.direction}" Value="up">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
         </StackPanel>
         
         
         <!-- Passengers List -->
-        <ListView x:Name="passengerListView" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding passengerList}">
+        <ListView Name="passengerListView" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding passengerList}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Style.Triggers>
@@ -93,8 +81,8 @@
         </ListView>
         <!-- Messages -->
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">-->
-                <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">
+            <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">
+            <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="440">-->
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Triggers>
@@ -109,16 +97,8 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
+                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>
                         <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>-->
-                        <GridViewColumn Header="Messages" Width="400">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock >
-                                        <Run Text="{Binding Text}"/>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>

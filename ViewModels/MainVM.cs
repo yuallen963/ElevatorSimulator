@@ -311,13 +311,6 @@ namespace ElevatorSimulator.ViewModels
         {
             while (passengerList.Count > 0)
             {
-                //Console.WriteLine(elevatorObj.moving);
-                //if (elevatorObj.moving)
-                //{
-                //    Thread.Sleep(TimeSpan.FromSeconds(1));
-                //    continue;
-                //}
-                //else
                 elevatorObj.direction = passengerList[0].direction;
                 if (passengerList[0].direction == "up")
                 {
@@ -341,7 +334,6 @@ namespace ElevatorSimulator.ViewModels
         //When the elevator is actived, and the elevator's next passenger has selected to go up
         private void ElevatorUp()
         {
-            //elevatorObj.moving = true;
             #region if passenger requested to go down, but the elevator needs to go up to pick them up
             if (passengerList.Count() != 0)
             {
@@ -352,7 +344,6 @@ namespace ElevatorSimulator.ViewModels
                     while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
                         IncrementPassengerTime();
-                        //await Task.Delay(delayTime);
                         if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0 &&
                             passengerList.Where(u => u.direction == "down").Count() > 0)
                             elevatorObj.currentFloor++;
@@ -363,6 +354,7 @@ namespace ElevatorSimulator.ViewModels
             }
             #endregion
 
+            //Queue all users going "up" -> sort them descending
             var passengersL = passengerList.Where(u => u.direction == "up").OrderByDescending(floor => floor.enterFloor);
             foreach (Passengers pass in passengersL)
             {
@@ -409,7 +401,6 @@ namespace ElevatorSimulator.ViewModels
                 }
 
                 IncrementPassengerTime();
-                //await Task.Delay(delayTime);
                 if (elevatorObj.currentFloor + 1 < 11 && passengerList.Count() > 0 && 
                     passengerList.Where(u => u.direction == "up").Count() > 0)
                     elevatorObj.currentFloor++;
@@ -418,10 +409,9 @@ namespace ElevatorSimulator.ViewModels
             elevatorObj.moving = false;
         }
 
-        //When the elevator is actived, and the elevator's next passenger has selected to go down
+        //When the elevator is activated, and the elevator's next passenger in queue has selected to go down
         private void ElevatorDown()
         {
-            //elevatorObj.moving = true;
             #region if passenger requested to go up, but the elevator needs to go down to pick them up
             if (passengerList.Count() != 0)
             {
@@ -435,7 +425,6 @@ namespace ElevatorSimulator.ViewModels
                             passengerList.Where(u => u.direction == "up").Count() > 0)
                             elevatorObj.currentFloor--;
                     }
-                    //elevatorObj.moving = false;
                     return;
                 }
             }
@@ -492,7 +481,6 @@ namespace ElevatorSimulator.ViewModels
                     elevatorObj.currentFloor--;
 
             }
-            //elevatorObj.moving = false;
         }
 
         //Increments passenger wait time and travel time
@@ -512,14 +500,6 @@ namespace ElevatorSimulator.ViewModels
 
         public void AddMessages(string message)
         {
-            if (elevatorMessages.Count() != 0)
-            {
-                //if ((elevatorMessages[elevatorMessages.Count() - 1].Text.Contains("Passenger") && message == "Elevator Stopped") ||
-                //    (elevatorMessages[elevatorMessages.Count() - 1].Text == "Elevator Direction Change"))
-                //    return;
-                //if ((elevatorMessages[elevatorMessages.Count() - 1].Text.Contains($"EXIT on floor {elevatorObj.currentFloor}") || (elevatorMessages[elevatorMessages.Count() - 1].Text.Contains($"ENTER from floor {elevatorObj.currentFloor}")) && message.Contains("Elevator Stopped") || message == "Elevator Direction Change") && !message.Contains("Floor") && !message.Contains("Passenger") && !message.Contains("Direction"))
-                //    return;
-            }
             ElevatorSimulator.App.Current.Dispatcher.Invoke((Action)delegate
             {
                 elevatorMessages.Add(new HelperClass() { Text = message });
