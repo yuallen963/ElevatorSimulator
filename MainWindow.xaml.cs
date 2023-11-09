@@ -21,6 +21,7 @@ namespace ElevatorSimulator
     public partial class MainWindow : Window
     {
         List<TextBlock> textBlocks= new List<TextBlock>();
+
         public MainWindow()
         {
             DataContext = this;
@@ -45,6 +46,11 @@ namespace ElevatorSimulator
         {
             ObservableCollection<HelperClass> list = (ObservableCollection<HelperClass>)sender;
             messagesListView.ScrollIntoView(list[list.Count() - 1]);
+
+            if (list[list.Count() - 1].Text == "Elevator Stopped")
+            {
+                list[list.Count() - 1].Text = $"Elevator Stopped on floor {MainVM.Instance.elevatorObj.currentFloor}";
+            }
 
             foreach (Passengers item in MainVM.Instance.passengerList)
             {

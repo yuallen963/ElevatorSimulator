@@ -37,6 +37,8 @@ namespace ElevatorSimulator.Models
                 if (this.m_moving != value)
                 {
                     this.m_moving = value;
+                    if (!value)
+                        MainVM.Instance.AddMessages($"Elevator Stopped");
                     this.RaisePropertyChangedEvent("moving");
                 }
             }
@@ -50,6 +52,8 @@ namespace ElevatorSimulator.Models
             {
                 if (this.m_direction != value)
                 {
+                        MainVM.Instance.AddMessages($"Elevator Direction Change");
+
                     this.m_direction = value;
                     this.RaisePropertyChangedEvent("direction");
                 }

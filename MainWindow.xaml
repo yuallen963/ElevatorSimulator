@@ -93,12 +93,32 @@
         </ListView>
         <!-- Messages -->
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">
-                <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">-->
+            <!--<ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}" Width="467">-->
+                <ListView x:Name="messagesListView" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding elevatorMessages}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Color}" Value="Salmon">
+                                <Setter Property="Background" Value="Salmon"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Text}" Value="Elevator Direction Change">
+                                <Setter Property="Background" Value="Gold"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="400"/>-->
-                        <GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>
+                        <!--<GridViewColumn Header="Messages" DisplayMemberBinding="{Binding Text}" Width="440"/>-->
+                        <GridViewColumn Header="Messages" Width="400">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock >
+                                        <Run Text="{Binding Text}"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
