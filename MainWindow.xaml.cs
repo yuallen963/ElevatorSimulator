@@ -237,5 +237,10 @@ namespace ElevatorSimulator
                 txtBlck.FontWeight = FontWeights.Normal;
             textBlocks[floor].FontWeight = FontWeights.Bold;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Environment.Exit(Environment.ExitCode);
+        }
     }
 }

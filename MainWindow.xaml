@@ -6,7 +6,7 @@
         xmlns:ViewModels="clr-namespace:ElevatorSimulator.ViewModels"
         xmlns:local="clr-namespace:ElevatorSimulator"
         mc:Ignorable="d"
-        Title="Elevator Simulator - Cadwell" Height="600" Width="600" ResizeMode="NoResize" Topmost="False">
+        Title="Elevator Simulator - Cadwell" Height="600" Width="600" ResizeMode="NoResize" Topmost="False" Closing="Window_Closing">
     <Window.DataContext>
         <ViewModels:MainVM/>
     </Window.DataContext>
