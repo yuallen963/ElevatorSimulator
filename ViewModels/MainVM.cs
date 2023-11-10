@@ -314,14 +314,14 @@ namespace ElevatorSimulator.ViewModels
                 elevatorObj.direction = passengerList[0].direction;
                 if (passengerList[0].direction == "up")
                 {
-                    if ((elevatorObj.currentFloor != passengerList[0].enterFloor) && (elevatorObj.currentFloor > passengerList[0].enterFloor))
+                    if ((elevatorObj.currentFloor != passengerList[0].enterFloor) && passengerList.Where(u => u.enterFloor < elevatorObj.currentFloor).OrderBy(floor => floor.enterFloor).Count() > 0)// && (elevatorObj.currentFloor > passengerList[0].enterFloor))
                         ElevatorDown();
                     else
                         ElevatorUp();
                 }
                 else
                 {
-                    if ((elevatorObj.currentFloor != passengerList[0].enterFloor) && (elevatorObj.currentFloor < passengerList[0].enterFloor))
+                    if ((elevatorObj.currentFloor != passengerList[0].enterFloor) && passengerList.Where(u=>u.enterFloor > elevatorObj.currentFloor).OrderByDescending(floor=>floor.enterFloor).Count() > 0)//(elevatorObj.currentFloor < passengerList[0].enterFloor))
                         ElevatorUp();
                     else
                         ElevatorDown();
@@ -337,10 +337,10 @@ namespace ElevatorSimulator.ViewModels
             #region if passenger requested to go down, but the elevator needs to go up to pick them up
             if (passengerList.Count() != 0)
             {
-                if (passengerList[0].direction == "down")
-                {
-                    var tempPassengersList = passengerList.Where(u => u.direction == "down").OrderByDescending(floor => floor.enterFloor);
+                var tempPassengersList = passengerList.Where(u => u.direction == "down").OrderByDescending(floor => floor.enterFloor);
 
+                if (tempPassengersList.Count() > 0 && passengerList[0].direction == "down")
+                {
                     while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
                         IncrementPassengerTime();
@@ -364,7 +364,11 @@ namespace ElevatorSimulator.ViewModels
             //Check for passengers ENTERING elevator
             while (passengerList.Where(u => u.passengerStatus == "in queue" && u.enterFloor >= elevatorObj.currentFloor || u.passengerStatus == "in elevator").Count() > 0) // && u.direction == "up"
             {
-                var passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "up") && (u.passengerStatus != "in elevator"));
+                var passengers = passengerList.Where(u => u.enterFloor >= elevatorObj.currentFloor && u.direction == "up" && u.passengerStatus == "waiting");
+                foreach (Passengers pass in passengers)
+                    pass.passengerStatus = "in queue";
+
+                passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "up") && (u.passengerStatus != "in elevator"));
                 if (passengers.Count() != 0)
                 {
                     elevatorObj.moving = false;
@@ -416,7 +420,7 @@ namespace ElevatorSimulator.ViewModels
             if (passengerList.Count() != 0)
             {
                 var tempPassengersList = passengerList.Where(u => u.direction == "up").OrderBy(floor => floor.enterFloor);
-                if (passengerList[0].direction == "up")
+                if (tempPassengersList.Count() > 0 && passengerList[0].direction == "up")
                 {
                     while (elevatorObj.currentFloor != tempPassengersList.ElementAt(0).enterFloor)
                     {
@@ -439,7 +443,11 @@ namespace ElevatorSimulator.ViewModels
             //Check for passengers ENTERING elevator
             while (passengerList.Where(u => u.passengerStatus == "in queue" && u.enterFloor <= elevatorObj.currentFloor || u.passengerStatus == "in elevator").Count() > 0)
             {
-                var passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "down") && (u.passengerStatus != "in elevator"));
+                var passengers = passengerList.Where(u => u.enterFloor <= elevatorObj.currentFloor && u.direction == "down" && u.passengerStatus == "waiting");
+                foreach (Passengers pass in passengers)
+                    pass.passengerStatus = "in queue";
+
+                passengers = passengerList.Where(u => u.enterFloor == elevatorObj.currentFloor && (u.direction == "down") && (u.passengerStatus != "in elevator"));
                 if (passengers.Count() != 0)
                 {
                     elevatorObj.moving = false;
